@@ -402,17 +402,17 @@ class _pageState extends State<page> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 8),
+                    padding: const EdgeInsets.only(left: 5),
                     child: Container(
                       height: 30,
-                      width: 75,
+                      width: 55,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                           border: Border.all(color: Colors.blue)),
                       child: const Align(
                         alignment: Alignment.center,
                         child: Text(
-                          'Deltolds',
+                          'core',
                           style: TextStyle(
                             color: Colors.blue,
                           ),
