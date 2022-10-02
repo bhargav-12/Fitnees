@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fittnessapp/form.dart';
 import 'package:fittnessapp/yoga/beginner/beginner.dart';
 import 'package:fittnessapp/yoga/expert/expert.dart';
 import 'package:fittnessapp/yoga/intermediat/intermediat.dart';
@@ -5,6 +7,7 @@ import 'package:fittnessapp/yoga/mornnig_yoga/morning_yoga.dart';
 import 'package:fittnessapp/yoga/posture_correction/posture_yoga.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class Yoga extends StatefulWidget {
@@ -36,6 +39,18 @@ class page extends StatefulWidget {
 
   @override
   State<page> createState() => _pageState();
+}
+
+var bagdetail = FirebaseFirestore.instance.collection('bagdetail');
+
+Future<void> adduser(a) {
+  print("User Added");
+  return bagdetail
+      .doc('add')
+      .collection(a)
+      .add({})
+      .then((value) => print('user added'))
+      .catchError((error) => print('failed to add user:$error'));
 }
 
 // ignore: camel_case_types
@@ -77,7 +92,7 @@ class _pageState extends State<page> {
   ];
 
   var page = [
-    const beginner(),
+    const formpage(),
     const Intermediat(),
     const expert(),
   ];
@@ -85,6 +100,10 @@ class _pageState extends State<page> {
     const morning_yoga_set(),
     const posture_yoga_set(),
   ];
+  Size screenSize() {
+    return MediaQuery.of(context).size;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -109,8 +128,8 @@ class _pageState extends State<page> {
               height: 15,
             ),
             SizedBox(
-              height: 130,
-              width: MediaQuery.of(context).size.width - 20,
+              height: 150,
+              width: MediaQuery.of(context).size.width - 80,
               child: Row(
                 children: [
                   for (int a = 0; a < category.length; a++) ...[
@@ -131,8 +150,8 @@ class _pageState extends State<page> {
                             borderRadius: BorderRadius.circular(15.0),
                           ),
                           child: Container(
-                            height: 130,
-                            width: 100,
+                            width: 85.w,
+                            height: 120.h,
                             decoration: const BoxDecoration(
                                 // borderRadius: BorderRadius.circular(10),
                                 ),
@@ -150,8 +169,8 @@ class _pageState extends State<page> {
                                 Padding(
                                   padding: const EdgeInsets.only(top: 5),
                                   child: SizedBox(
-                                    height: 70,
-                                    width: 70,
+                                    height: 70.h,
+                                    width: 70.w,
                                     child: Image.network(
                                       category[a]['image'].toString(),
                                     ),
@@ -215,8 +234,8 @@ class _pageState extends State<page> {
             Align(
               alignment: Alignment.center,
               child: SizedBox(
-                height: 250,
-                width: MediaQuery.of(context).size.width - 28,
+                height: 250.h,
+                width: 400.w,
                 child: Row(
                   children: [
                     for (int b = 0; b < morning.length; b++) ...[

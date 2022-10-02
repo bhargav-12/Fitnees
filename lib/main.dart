@@ -1,9 +1,15 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import 'package:fittnessapp/createaccount/create_account.dart';
+import 'package:fittnessapp/profile/profile.dart';
+import 'package:fittnessapp/yoga/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+
+import 'dashboard/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,21 +37,26 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return const GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: SafeArea(
-        child: Scaffold(body: loginpage()),
-      ),
-    );
+    return ScreenUtilInit(
+        designSize: Size(375, 812),
+        builder: ((context, child) {
+          return GetMaterialApp(
+            debugShowCheckedModeBanner: false,
+            home: SafeArea(
+              child: Scaffold(
+                body: StreamBuilder(
+                  stream: FirebaseAuth.instance.authStateChanges(),
+                  builder: (BuildContext context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Yoga();
+                    } else {
+                      return loginpage();
+                    }
+                  },
+                ),
+              ),
+            ),
+          );
+        }));
   }
 }
-// StreamBuilder(
-//         stream: FirebaseAuth.instance.authStateChanges(),
-//         builder: (BuildContext context, snapshot) {
-//           if (snapshot.hasData) {
-//             return home();
-//           } else {
-//             return loginpage();
-//           }
-//         },
-//       ),
