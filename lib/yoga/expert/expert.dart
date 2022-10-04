@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fittnessapp/yoga/expert/badtime/badtime_yoga.dart';
 import 'package:fittnessapp/yoga/expert/inner_peace/inner_peace.dart';
 import 'package:fittnessapp/yoga/expert/slow_flow/slow_flow.dart';
@@ -56,32 +57,72 @@ class page extends StatefulWidget {
 
 // ignore: camel_case_types
 class _pageState extends State<page> {
-  var data = [
-    {
-      "name": "Badtime yoga",
-      "image":
-          "https://assets.thehansindia.com/h-upload/2022/06/20/1600x960_1298751-yoga.jpg",
-      "time": "Expert 20 mins.40 Caloris",
-    },
-    {
-      "name": "Slow Strech",
-      "image":
-          "https://resize.indiatvnews.com/en/resize/newbucket/1200_-/2021/06/yoga-1624008293.jpg",
-      "time": "Expert 15 mins.30 Caloris",
-    },
-    {
-      "name": "Inner Peace",
-      "image":
-          "https://www.baliecostay.com/wp-content/uploads/2017/04/Yoga-Bali-Eco-Stay.jpg",
-      "time": "Expert 14 mins.26 Caloris",
-    },
-    {
-      "name": "Slow Flow",
-      "image":
-          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRk-j64684kocw0ZqJE3O05MEwCFzV9HOQTdxaetGnTQ9rKEJrV0a56CIMN5pGEjzEsUpM&usqp=CAU",
-      "time": "Expert 9 mins.22Caloris",
-    },
+  List expertimage = [];
+  List expertcalary = [];
+  List expertname = [];
+  List experttime = [];
+
+  @override
+  void dispose() {
+    expertimage = [];
+    expertcalary = [];
+    expertname = [];
+    experttime = [];
+    beginner();
+    super.dispose();
+  }
+
+  void beginner() async {
+    var snapshot;
+    snapshot = await FirebaseFirestore.instance
+        .collection('yoga')
+        .doc('yoga_d')
+        .collection('expert')
+        .get();
+    List storedocs = [];
+    snapshot.docs.map((DocumentSnapshot document) {
+      Map a = document.data() as Map<String, dynamic>;
+      storedocs.add(a);
+      a['id'] = document.id;
+    }).toList();
+
+    if (mounted)
+      setState(() {
+        for (var i = 0; i < storedocs.length; i++) {
+          expertimage.add(
+            storedocs[i]['image'],
+          );
+          expertcalary.add(storedocs[i]['calary']);
+          expertname.add(storedocs[i]['name']);
+          experttime.add(storedocs[i]['time']);
+        }
+        super.setState(() {});
+      });
+  }
+
+  @override
+  void initState() {
+    expertimage = [];
+    expertcalary = [];
+    expertname = [];
+    experttime = [];
+    beginner();
+    super.initState();
+  }
+
+  List time = [
+    'time :',
+    'time :',
+    'time :',
+    'time :',
   ];
+  List calary = [
+    'calary :',
+    'calary :',
+    'calary :',
+    'calary :',
+  ];
+
   List navi = [
     const bad_time2(),
     const Slow_strech2(),
@@ -94,7 +135,7 @@ class _pageState extends State<page> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            for (int a = 0; a < data.length; a++) ...[
+            for (int a = 0; a < expertimage.length; a++) ...[
               InkWell(
                 onTap: () {
                   Navigator.of(context).push(
@@ -112,7 +153,7 @@ class _pageState extends State<page> {
                         width: MediaQuery.of(context).size.width - 40,
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: NetworkImage(data[a]['image'].toString()),
+                            image: NetworkImage(expertimage[a].toString()),
                             fit: BoxFit.fill,
                           ),
                         ),
@@ -130,7 +171,7 @@ class _pageState extends State<page> {
                         Padding(
                           padding: const EdgeInsets.only(left: 80, top: 70),
                           child: Text(
-                            data[a]['name'].toString(),
+                            expertname[a].toString(),
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
@@ -141,7 +182,16 @@ class _pageState extends State<page> {
                         Padding(
                           padding: const EdgeInsets.only(left: 80),
                           child: Text(
-                            data[a]['time'].toString(),
+                            time[a] + experttime[a].toString(),
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 80),
+                          child: Text(
+                            calary[a] + expertcalary[a].toString(),
                             style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white),

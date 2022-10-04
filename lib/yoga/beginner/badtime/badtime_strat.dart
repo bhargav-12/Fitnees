@@ -1,4 +1,5 @@
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fittnessapp/yoga/beginner/badtime/badtime_yoga_set.dart';
 
 import 'package:flutter/material.dart';
@@ -75,6 +76,46 @@ class page extends StatefulWidget {
 
 // ignore: camel_case_types
 class _pageState extends State<page> with TickerProviderStateMixin {
+  List exercisename = [];
+  List gifurl = [];
+  List totalset = [];
+  List totaltime = [];
+
+  void beginnerbadtime() async {
+    var snapshot;
+    snapshot = await FirebaseFirestore.instance
+        .collection('yoga')
+        .doc('yoga_d')
+        .collection('beginner')
+        .doc('badtime_yoga')
+        .collection('indetail_badtimeyoga')
+        .doc()
+        .collection("yoga_exercise")
+        .doc('1')
+        .collection('1')
+        .doc()
+        .get();
+    List storedocs = [];
+    snapshot.docs.map((DocumentSnapshot document) {
+      Map a = document.data() as Map<String, dynamic>;
+      storedocs.add(a);
+      a['id'] = document.id;
+    }).toList();
+
+    if (mounted)
+      setState(() {
+        for (var i = 0; i < storedocs.length; i++) {
+          exercisename.add(
+            storedocs[i]['exercise_name'],
+          );
+          gifurl.add(storedocs[i]['calary']);
+          totalset.add(storedocs[i]['total_set']);
+          totaltime.add(storedocs[i]['total_time']);
+        }
+        super.setState(() {});
+      });
+  }
+
   var data = [
     {
       "name": "Warm Up",
@@ -129,12 +170,22 @@ class _pageState extends State<page> with TickerProviderStateMixin {
   void initState() {
     _controller1 = AnimationController(
         duration: const Duration(milliseconds: 200), vsync: this);
+    exercisename = [];
+    gifurl = [];
+    totalset = [];
+    totaltime = [];
+    beginnerbadtime();
     super.initState();
   }
 
   // Dispose the controller
   @override
   void dispose() {
+    exercisename = [];
+    gifurl = [];
+    totalset = [];
+    totaltime = [];
+    beginnerbadtime();
     _controller1.dispose();
     super.dispose();
   }

@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fittnessapp/form.dart';
 import 'package:fittnessapp/yoga/beginner/beginner.dart';
+import 'package:fittnessapp/yoga/beginner/beginner.dart';
 import 'package:fittnessapp/yoga/expert/expert.dart';
 import 'package:fittnessapp/yoga/intermediat/intermediat.dart';
 import 'package:fittnessapp/yoga/mornnig_yoga/morning_yoga.dart';
 import 'package:fittnessapp/yoga/posture_correction/posture_yoga.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -41,20 +41,11 @@ class page extends StatefulWidget {
   State<page> createState() => _pageState();
 }
 
-var bagdetail = FirebaseFirestore.instance.collection('bagdetail');
-
-Future<void> adduser(a) {
-  print("User Added");
-  return bagdetail
-      .doc('add')
-      .collection(a)
-      .add({})
-      .then((value) => print('user added'))
-      .catchError((error) => print('failed to add user:$error'));
-}
-
+//
 // ignore: camel_case_types
 class _pageState extends State<page> {
+//   List itemList = [];
+
   var category = [
     {
       "name": "Beginner",
@@ -92,7 +83,7 @@ class _pageState extends State<page> {
   ];
 
   var page = [
-    const formpage(),
+    const beginner(),
     const Intermediat(),
     const expert(),
   ];

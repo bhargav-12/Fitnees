@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fittnessapp/yoga/intermediat/badtime/badtime_yoga.dart';
 import 'package:fittnessapp/yoga/intermediat/inner_peace/inner_peace.dart';
 import 'package:fittnessapp/yoga/intermediat/show_flow/slow_flow.dart';
@@ -57,32 +58,72 @@ class page extends StatefulWidget {
 
 // ignore: camel_case_types
 class _pageState extends State<page> {
-  var data = [
-    {
-      "name": "Badtime yoga",
-      "image":
-          "https://www.healthifyme.com/blog/wp-content/uploads/2019/08/Yoga-Poses-for-Weight-Loss-1-1024x600.jpg",
-      "time": "Intermediat 15 mins.32Caloris",
-    },
-    {
-      "name": "Slow Strech",
-      "image":
-          "https://images.hindustantimes.com/img/2021/11/28/1600x900/jose-vazquez-UUf5nxhEhAs-unsplash_1638097578747_1638097601424.jpg",
-      "time": "Intermediat 11 mins.26Caloris",
-    },
-    {
-      "name": "Inner Peace",
-      "image":
-          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRYxpbO9-BPYJtyS3qvMcuvlZggPUfF8x2bQ&usqp=CAU",
-      "time": "Intermediat 13 mins.29 Caloris",
-    },
-    {
-      "name": "Slow Flow",
-      "image":
-          "https://media.istockphoto.com/photos/man-and-soul-yoga-lotus-pose-meditation-on-nebula-galaxy-background-picture-id1313456479?b=1&k=20&m=1313456479&s=170667a&w=0&h=dPt49TSikJDm4NqfKd5Cb47GOsWe0pTeXkS4dvUeZbk=",
-      "time": "Intermediat 20 mins.36 Caloris",
-    },
+  List intermediatimage = [];
+  List intermediatcalary = [];
+  List intermediatname = [];
+  List intermediattime = [];
+
+  @override
+  void dispose() {
+    intermediatimage = [];
+    intermediatcalary = [];
+    intermediatname = [];
+    intermediattime = [];
+    beginner();
+    super.dispose();
+  }
+
+  void beginner() async {
+    var snapshot;
+    snapshot = await FirebaseFirestore.instance
+        .collection('yoga')
+        .doc('yoga_d')
+        .collection('intermediat')
+        .get();
+    List storedocs = [];
+    snapshot.docs.map((DocumentSnapshot document) {
+      Map a = document.data() as Map<String, dynamic>;
+      storedocs.add(a);
+      a['id'] = document.id;
+    }).toList();
+
+    if (mounted)
+      setState(() {
+        for (var i = 0; i < storedocs.length; i++) {
+          intermediatimage.add(
+            storedocs[i]['image'],
+          );
+          intermediatcalary.add(storedocs[i]['calary']);
+          intermediatname.add(storedocs[i]['name']);
+          intermediattime.add(storedocs[i]['time']);
+        }
+        super.setState(() {});
+      });
+  }
+
+  @override
+  void initState() {
+    intermediatimage = [];
+    intermediatcalary = [];
+    intermediatname = [];
+    intermediattime = [];
+    beginner();
+    super.initState();
+  }
+
+  List time = [
+    'time :',
+    'time :',
+    'time :',
+    'time :',
   ];
+  List calary = [
+    'calary :',
+    'calary :',
+    'calary :',
+    'calary :',
+  ];
+
   List navi = [
     const bad_time1(),
     const Slow_strech1(),
@@ -95,7 +136,7 @@ class _pageState extends State<page> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            for (int a = 0; a < data.length; a++) ...[
+            for (int a = 0; a < intermediatcalary.length; a++) ...[
               InkWell(
                 onTap: () {
                   Navigator.of(context).push(
@@ -115,7 +156,8 @@ class _pageState extends State<page> {
                           width: MediaQuery.of(context).size.width - 40,
                           decoration: BoxDecoration(
                             image: DecorationImage(
-                              image: NetworkImage(data[a]['image'].toString()),
+                              image:
+                                  NetworkImage(intermediatimage[a].toString()),
                               fit: BoxFit.fill,
                             ),
                           ),
@@ -134,7 +176,7 @@ class _pageState extends State<page> {
                         Padding(
                           padding: const EdgeInsets.only(left: 80, top: 70),
                           child: Text(
-                            data[a]['name'].toString(),
+                            intermediatname[a].toString(),
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
@@ -145,7 +187,16 @@ class _pageState extends State<page> {
                         Padding(
                           padding: const EdgeInsets.only(left: 80),
                           child: Text(
-                            data[a]['time'].toString(),
+                            time[a] + intermediattime[a].toString(),
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 80),
+                          child: Text(
+                            calary[a] + intermediatcalary[a].toString(),
                             style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white),
