@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fittnessapp/yoga/beginner/badtime/badtime_strat.dart';
 import 'package:fittnessapp/yoga/beginner/badtime/badtime_yoga.dart';
 import 'package:flutter/material.dart';

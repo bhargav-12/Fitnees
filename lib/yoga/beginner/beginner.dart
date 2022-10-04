@@ -1,6 +1,8 @@
 import 'dart:ui';
 
 // ignore: unused_import
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fittnessapp/meal_planner/breakfast.dart';
 import 'package:fittnessapp/yoga/beginner/badtime/badtime_yoga.dart';
 import 'package:fittnessapp/yoga/beginner/inner_peace/inner_peace.dart';
 import 'package:fittnessapp/yoga/beginner/show_flow/slow_flow.dart';
@@ -59,37 +61,76 @@ class page extends StatefulWidget {
 
 // ignore: camel_case_types
 class _pageState extends State<page> {
-  var data = [
-    {
-      "name": "Badtime yoga",
-      "image":
-          "https://cdn.pixabay.com/photo/2018/04/21/15/21/yoga-3338691__340.jpg",
-      "time": "Bigineer 9 mins.22 Caloris",
-    },
-    {
-      "name": "Slow Strech",
-      "image":
-          "https://yogascapes.com/wp-content/uploads/2017/04/DSC_7506-555x405.jpg",
-      "time": "Bigineer 15 mins.21 Caloris",
-    },
-    {
-      "name": "Inner Peace",
-      "image":
-          "https://images.pexels.com/photos/1051838/pexels-photo-1051838.jpeg?cs=srgb&dl=pexels-prasanth-inturi-1051838.jpg&fm=jpg",
-      "time": "Bigineer 7 mins.18 Caloris",
-    },
-    {
-      "name": "Slow Flow",
-      "image":
-          "https://assets.traveltriangle.com/blog/wp-content/uploads/2018/08/116.jpg",
-      "time": "Bigineer 10 mins.24 Caloris",
-    },
-  ];
+  List beginnerimage = [];
+  List beginnercalary = [];
+  List beginnername = [];
+  List begginertime = [];
+
+  @override
+  void dispose() {
+    beginnerimage = [];
+    beginnercalary = [];
+    beginnername = [];
+    begginertime = [];
+    beginner();
+    super.dispose();
+  }
+
+  void beginner() async {
+    var snapshot;
+    snapshot = await FirebaseFirestore.instance
+        .collection('yoga')
+        .doc('yoga_d')
+        .collection('beginner')
+        .get();
+    List storedocs = [];
+    snapshot.docs.map((DocumentSnapshot document) {
+      Map a = document.data() as Map<String, dynamic>;
+      storedocs.add(a);
+      a['id'] = document.id;
+    }).toList();
+
+    if (mounted)
+      setState(() {
+        for (var i = 0; i < storedocs.length; i++) {
+          beginnerimage.add(
+            storedocs[i]['image'],
+          );
+          beginnercalary.add(storedocs[i]['calary']);
+          beginnername.add(storedocs[i]['name']);
+          begginertime.add(storedocs[i]['time']);
+        }
+        super.setState(() {});
+      });
+  }
+
+  @override
+  void initState() {
+    beginnerimage = [];
+    beginnercalary = [];
+    beginnername = [];
+    begginertime = [];
+    beginner();
+    super.initState();
+  }
+
   List navi = [
     const bad_time(),
     const Slow_strech(),
     const inner_peace(),
     const Slow_flow(),
+  ];
+  List time = [
+    'time :',
+    'time :',
+    'time :',
+    'time :',
+  ];
+  List calary = [
+    'calary :',
+    'calary :',
+    'calary :',
+    'calary :',
   ];
   @override
   Widget build(BuildContext context) {
@@ -97,7 +138,7 @@ class _pageState extends State<page> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            for (int a = 0; a < data.length; a++) ...[
+            for (int a = 0; a < begginertime.length; a++) ...[
               InkWell(
                 onTap: () => Get.to(navi[a]),
                 child: Stack(
@@ -111,7 +152,7 @@ class _pageState extends State<page> {
                           width: MediaQuery.of(context).size.width - 40,
                           decoration: BoxDecoration(
                             image: DecorationImage(
-                              image: NetworkImage(data[a]['image'].toString()),
+                              image: NetworkImage(beginnerimage[a].toString()),
                               fit: BoxFit.fill,
                             ),
                           ),
@@ -130,7 +171,7 @@ class _pageState extends State<page> {
                         Padding(
                           padding: const EdgeInsets.only(left: 80, top: 70),
                           child: Text(
-                            data[a]['name'].toString(),
+                            beginnername[a].toString(),
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
@@ -141,7 +182,16 @@ class _pageState extends State<page> {
                         Padding(
                           padding: const EdgeInsets.only(left: 80),
                           child: Text(
-                            data[a]['time'].toString(),
+                            time[a] + begginertime[a].toString(),
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 80),
+                          child: Text(
+                            calary[a] + beginnercalary[a].toString(),
                             style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white),

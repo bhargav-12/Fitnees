@@ -16,7 +16,7 @@ class _formpageState extends State<formpage> {
   String? gifurl = '';
   double totalset = 0;
   double totaltime = 0;
-  String? id;
+  String? id = "";
 
   final exercisenameController = TextEditingController();
   final gifurlcontroller = TextEditingController();
@@ -48,15 +48,11 @@ class _formpageState extends State<formpage> {
     Future<void> adduser(id, exercisename, gifurl, totalset, totaltime) {
       print("User Added");
       return yoga
-          .doc('yoga_d')
-          .collection('beginner')
-          .doc('inner_peace')
-          .collection('indetail_innerpeace')
-          .doc()
-          .collection('yoga_exercise')
-          .doc('1')
+          .doc('yoga_time')
+          .collection('night_yoga')
+          .doc('night_yoga')
           .collection('1')
-          .doc(id)
+          .doc(idcontroller.text)
           .set({
             'exercise_name': exercisename,
             'gif_url': gifurlcontroller.text,
@@ -154,14 +150,14 @@ class _formpageState extends State<formpage> {
                     style: TextStyle(fontSize: 15),
                     cursorColor: Colors.black,
                     controller: totalsetcontroller,
-                    onChanged: (value) => totalset,
+                    // onChanged: (value) => totalset,
                     keyboardType: TextInputType.number,
-                    // onChanged: (s) {
-                    //   if (double.tryParse(s) != null)
-                    //     setState(() {
-                    //       weight = double.parse(s);
-                    //     });
-                    // },
+                    onChanged: (s) {
+                      if (double.tryParse(s) != null)
+                        setState(() {
+                          totalset = double.parse(s);
+                        });
+                    },
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(15),
@@ -196,7 +192,13 @@ class _formpageState extends State<formpage> {
                     style: TextStyle(fontSize: 15),
                     cursorColor: Colors.black,
                     controller: totaltimecontroller,
-                    onChanged: (value) => totaltime,
+                    // onChanged: (value) => totaltime,
+                    onChanged: (s) {
+                      if (double.tryParse(s) != null)
+                        setState(() {
+                          totaltime = double.parse(s);
+                        });
+                    },
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
@@ -260,8 +262,8 @@ class _formpageState extends State<formpage> {
                       id = idcontroller.text;
                       exercisename = exercisenameController.text;
                       gifurl = gifurlcontroller.text;
-                      totalset = totalsetcontroller as double;
-                      totaltime = totaltimecontroller as double;
+                      // totalset = totalsetcontroller ;
+                      // totaltime = totaltimecontroller ;
                       Navigator.pop(context);
                     }
                   });
